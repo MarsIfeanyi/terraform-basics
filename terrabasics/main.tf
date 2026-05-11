@@ -9,19 +9,19 @@ terraform {
 
 provider "google" {
 
-  credentials = "./keys/my-creds.json"
-  project = "grand-verve-368213"
-  region  = "us-central1"
+  credentials = file(var.credentials)
+  project     = var.project
+  region      = var.region
 }
 
 
 
 resource "google_storage_bucket" "terrademo-bucket" {
-  name          = "grand-verve-368213-terrabucket"
-  location      = "US"
+  name          = var.gcs_bucket_name
+  location      = var.location
   force_destroy = true
 
- 
+
 
   lifecycle_rule {
     condition {
@@ -31,4 +31,10 @@ resource "google_storage_bucket" "terrademo-bucket" {
       type = "AbortIncompleteMultipartUpload"
     }
   }
+}
+
+
+resource "google_bigquery_dataset" "mydemodataset" {
+  dataset_id = var.bq_dataset_name
+  location = var.location
 }
